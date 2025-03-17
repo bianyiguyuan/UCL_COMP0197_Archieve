@@ -5,7 +5,7 @@ from optimizer import fit_logistic_sgd
 def generate_data(n, M, D):
     X = np.random.uniform(-5, 5, (n, D))
     p = count_p(M, D)
-    w = np.arraynp.array([(-1) ** (p - k) * np.sqrt(k) / p for k in range(p, 0, -1)])
+    w = np.array([(-1) ** (p - k) * np.sqrt(k) / p for k in range(p, 0, -1)])
     y = np.array([logistic_fun(w, M, X[i]) for i in range(n)]) + np.random.normal(0, 1.0, n)
     t = np.array([1 if y[i] >= 0.5 else 0 for i in range(n)])
     return X, t
