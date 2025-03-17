@@ -16,4 +16,5 @@ def count_p(M, D):
 
 def logistic_fun(w, M, x):
     poly = polynomial_features(x, M)
-    return 1 / (1 + np.exp(-np.dot(w, poly)))
+    z = np.clip(np.dot(w, poly), -700, 700)
+    return 1 / (1 + np.exp(-z))
