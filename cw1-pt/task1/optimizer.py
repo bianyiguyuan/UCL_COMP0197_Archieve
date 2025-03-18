@@ -4,10 +4,10 @@ import numpy as np
 from logistic_model import polynomial_features
 from loss_function import myCrossEntropy, myRootMeanSquare
 
-def fit_logistic_sgd(X, t, M, type='cross_entropy', lr=0.01, batch_size=10, epochs=100):
+def fit_logistic_sgd(X, t, M, type='cross_entropy', lr=0.001, batch_size=10, epochs=100):
     n = X.shape[0]  
     poly_features = np.array([polynomial_features(X[i], M) for i in range(n)])
-    W = torch.randn(poly_features.shape[1], dtype=torch.float32, requires_grad=True)
+    W = torch.nn.Parameter(torch.randn(poly_features.shape[1], dtype=torch.float32) * 0.05)
     loss_func = myCrossEntropy() if type == 'cross_entropy' else myRootMeanSquare()
     optimizer = optim.SGD([W], lr=lr)
     for epoch in range(epochs):
@@ -19,7 +19,7 @@ def fit_logistic_sgd(X, t, M, type='cross_entropy', lr=0.01, batch_size=10, epoc
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
-        if epoch % 10 == 0:
+        if epoch % 10 == 0 or epoch == epochs - 1:
             print(f'Epoch {epoch+1}/{epochs}, Loss: {loss.item()}')
 
     return W.detach().numpy()

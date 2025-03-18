@@ -6,6 +6,7 @@ class myCrossEntropy(nn.Module):
         super(myCrossEntropy, self).__init__()
         self.loss = nn.BCELoss()
 
+
     def forward(self, output, target):
         return self.loss(output, target)
     
@@ -15,4 +16,4 @@ class myRootMeanSquare(nn.Module):
         self.loss = nn.MSELoss()
 
     def forward(self, output, target):
-        return torch.sqrt(torch.clamp(self.loss(output, target), min=1e-9))
+        return torch.sqrt(self.loss(output, target))
