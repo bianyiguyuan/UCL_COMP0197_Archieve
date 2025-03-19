@@ -1,8 +1,10 @@
 import torch
-from myELM import MyExtrmeLearningMachine
+import torch.nn as nn
+from myELM import MyExtremeLearningMachine
 from myMixup import MyMixUp
 from myEnsembleELM import MyEnsembleELM
 from dataLoader import load_data
+from utils import f1_score
 
 def random_guess(test_loader, num_classes=10):
     correct = 0
@@ -14,7 +16,7 @@ def random_guess(test_loader, num_classes=10):
     return correct / total
 
 def basic_elm(train_loader, num_classes=10, lr=0.01, epochs=10):
-    model = MyExtrmeLearningMachine(3, 32, num_classes)
+    model = MyExtremeLearningMachine(3, 32, num_classes)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr)
     criterion = torch.nn.CrossEntropyLoss()
 
@@ -22,6 +24,8 @@ def basic_elm(train_loader, num_classes=10, lr=0.01, epochs=10):
         epoch_loss = 0.0
         correct = 0
         total = 0
+        all_preds = []
+        all_labels = []
 
         for images, labels in train_loader:
             optimizer.zero_grad()
@@ -33,26 +37,35 @@ def basic_elm(train_loader, num_classes=10, lr=0.01, epochs=10):
             _, predicted = torch.max(outputs, 1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
+            # all_preds.extend(predicted.cpu().numpy())
+            # all_labels.extend(labels.cpu().numpy())
+
         accuracy = correct / total
-        print(f'Epoch {epoch+1}/{epochs}, Loss: {epoch_loss}, Accuracy: {accuracy}')
+        # f1 = f1_score(all_labels, all_preds)
+        print(f'Epoch {epoch+1}/10, Loss: {epoch_loss:.4f}, Accuracy: {accuracy:.4f}')
+        # print(f'Epoch {epoch+1}/10, Loss: {epoch_loss:.4f}, Accuracy: {accuracy:.4f}, F1 Score: {f1:.4f}')
     return model
 
 def mixed_elm(train_loader, is_mixup=False, is_ensemble=False, n_models=5):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # 选择模型
     if is_ensemble:
         model = MyEnsembleELM(
-        n_models=5,
-        input_channels=3,
-        num_feature_maps=32,
-        num_classes=10
-    )
+            n_models=n_models,
+            input_channels=3,
+            num_feature_maps=32,
+            num_classes=10
+        )
     else:
-        model = MyExtrmeLearningMachine(3, 32, 10)
-    optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
-    criterion = torch.nn.CrossEntropyLoss()
-    if is_mixup:
-        mixup = MyMixUp(alpha=1.0)
-    else:
-        mixup = None
+        model = MyExtremeLearningMachine(3, 256, 10, std=0.01)
+
+    model.to(device)
+
+    optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
+    criterion = nn.CrossEntropyLoss()
+
+    mixup = MyMixUp(alpha=0.4) if is_mixup else None
 
     for epoch in range(10):
         epoch_loss = 0.0
@@ -60,17 +73,19 @@ def mixed_elm(train_loader, is_mixup=False, is_ensemble=False, n_models=5):
         total = 0
 
         for images, labels in train_loader:
-            if mixup:
-                index, lam = mixup.mixup_indices(images)
-                mixed_images = lam * images + (1 - lam) * images[index]
-                y_a, y_b = labels, labels[index]
-                outputs = model(mixed_images)
-                loss = lam * criterion(outputs, y_a) + (1 - lam) * criterion(outputs, y_b)
-            else:
-                outputs = model(images)
-                loss = criterion(outputs, labels)
+            images, labels = images.to(device), labels.to(device)
 
             optimizer.zero_grad()
+
+            if mixup:
+                # Apply Mixup
+                mixed_images, y_a, y_b, lam = mixup.mixup_data(images, labels)
+                outputs = model(mixed_images)
+                loss = mixup(outputs, y_a.long(), y_b.long(), lam)
+            else:
+                outputs = model(images)
+                loss = criterion(outputs, labels.long())
+
             loss.backward()
             optimizer.step()
 
@@ -79,12 +94,16 @@ def mixed_elm(train_loader, is_mixup=False, is_ensemble=False, n_models=5):
             _, predicted = torch.max(outputs, 1)
             correct += (predicted == labels).sum().item()
             total += labels.size(0)
+
         accuracy = correct / total
-        print(f'Epoch {epoch+1}/10, Loss: {epoch_loss}, Accuracy: {accuracy}')
+        print(f'Epoch {epoch+1}/10, Loss: {epoch_loss:.4f}, Accuracy: {accuracy:.4f}')
+
     return model
 
+
+
 def save_model(model, filename):
-    torch.save(model.state_dict(), f"cw1-pt/task2/{filename}.pth")
+    torch.save(model.state_dict(), f".model_saved/{filename}.pth")
     print(f"Model saved: {filename}.pth")
 
 if __name__ == '__main__':

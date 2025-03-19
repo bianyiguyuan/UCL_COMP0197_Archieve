@@ -3,9 +3,9 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-class MyExtrmeLearningMachine(nn.Module):
+class MyExtremeLearningMachine(nn.Module):
     def __init__(self, input_channels, num_feature_maps, num_classes, kernel_size=3, std=0.1):
-        super(MyExtrmeLearningMachine, self).__init__()
+        super(MyExtremeLearningMachine, self).__init__()
         self.num_feature_maps = num_feature_maps
         self.conv_layer = nn.Conv2d(input_channels, num_feature_maps, kernel_size, padding=1, bias=False)
         self.conv_layer.weight = nn.Parameter(self.initialise_fixed_layers(self.conv_layer.weight.shape, std), requires_grad=False)
