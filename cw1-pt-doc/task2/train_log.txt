@@ -1,0 +1,45 @@
+=== Training Log ===
+=== Training basic ELM ===
+Epoch 1/10 | Loss: 2183.7011 | Accuracy: 0.3864 | F1 Score: 0.3809
+Epoch 2/10 | Loss: 1981.7457 | Accuracy: 0.4456 | F1 Score: 0.4406
+Epoch 3/10 | Loss: 1894.2750 | Accuracy: 0.4721 | F1 Score: 0.4675
+Epoch 4/10 | Loss: 1832.9447 | Accuracy: 0.4882 | F1 Score: 0.4838
+Epoch 5/10 | Loss: 1782.4603 | Accuracy: 0.5042 | F1 Score: 0.4998
+Epoch 6/10 | Loss: 1743.2777 | Accuracy: 0.5174 | F1 Score: 0.5136
+Epoch 7/10 | Loss: 1708.6538 | Accuracy: 0.5277 | F1 Score: 0.5241
+Epoch 8/10 | Loss: 1680.3754 | Accuracy: 0.5330 | F1 Score: 0.5296
+Epoch 9/10 | Loss: 1651.0631 | Accuracy: 0.5423 | F1 Score: 0.5390
+Epoch 10/10 | Loss: 1630.5450 | Accuracy: 0.5492 | F1 Score: 0.5461
+=== Training Basic ELM Model with Mixup ===
+Epoch 1/10 | Loss: 2254.9171 | Accuracy: 0.3681 | F1 Score: 0.2457
+Epoch 2/10 | Loss: 2083.3967 | Accuracy: 0.4246 | F1 Score: 0.2861
+Epoch 3/10 | Loss: 2007.5322 | Accuracy: 0.4482 | F1 Score: 0.2866
+Epoch 4/10 | Loss: 1953.5048 | Accuracy: 0.4647 | F1 Score: 0.3014
+Epoch 5/10 | Loss: 1909.8175 | Accuracy: 0.4776 | F1 Score: 0.3134
+Epoch 6/10 | Loss: 1879.3415 | Accuracy: 0.4851 | F1 Score: 0.3078
+Epoch 7/10 | Loss: 1848.3430 | Accuracy: 0.4962 | F1 Score: 0.3183
+Epoch 8/10 | Loss: 1830.2152 | Accuracy: 0.5033 | F1 Score: 0.3291
+Epoch 9/10 | Loss: 1801.9009 | Accuracy: 0.5119 | F1 Score: 0.3314
+Epoch 10/10 | Loss: 1790.4075 | Accuracy: 0.5154 | F1 Score: 0.3260
+=== Training Ensemble Model  ===
+Epoch 1/10 | Loss: 2177.5196 | Accuracy: 0.3848 | F1 Score: 0.3805
+Epoch 2/10 | Loss: 1929.9649 | Accuracy: 0.4592 | F1 Score: 0.4551
+Epoch 3/10 | Loss: 1818.6795 | Accuracy: 0.4905 | F1 Score: 0.4870
+Epoch 4/10 | Loss: 1735.8855 | Accuracy: 0.5146 | F1 Score: 0.5112
+Epoch 5/10 | Loss: 1677.6178 | Accuracy: 0.5333 | F1 Score: 0.5303
+Epoch 6/10 | Loss: 1630.4030 | Accuracy: 0.5460 | F1 Score: 0.5432
+Epoch 7/10 | Loss: 1588.7195 | Accuracy: 0.5577 | F1 Score: 0.5552
+Epoch 8/10 | Loss: 1547.9556 | Accuracy: 0.5686 | F1 Score: 0.5662
+Epoch 9/10 | Loss: 1518.3524 | Accuracy: 0.5821 | F1 Score: 0.5800
+Epoch 10/10 | Loss: 1487.8024 | Accuracy: 0.5883 | F1 Score: 0.5863
+=== Training Ensemble Model with Mixup ===
+Epoch 1/10 | Loss: 2249.7025 | Accuracy: 0.3677 | F1 Score: 0.2454
+Epoch 2/10 | Loss: 2040.7906 | Accuracy: 0.4324 | F1 Score: 0.2873
+Epoch 3/10 | Loss: 1928.5847 | Accuracy: 0.4661 | F1 Score: 0.3006
+Epoch 4/10 | Loss: 1866.5190 | Accuracy: 0.4834 | F1 Score: 0.3089
+Epoch 5/10 | Loss: 1813.8734 | Accuracy: 0.5025 | F1 Score: 0.3261
+Epoch 6/10 | Loss: 1776.6301 | Accuracy: 0.5136 | F1 Score: 0.3242
+Epoch 7/10 | Loss: 1743.2941 | Accuracy: 0.5226 | F1 Score: 0.3288
+Epoch 8/10 | Loss: 1714.0728 | Accuracy: 0.5337 | F1 Score: 0.3332
+Epoch 9/10 | Loss: 1682.7171 | Accuracy: 0.5431 | F1 Score: 0.3595
+Epoch 10/10 | Loss: 1648.5380 | Accuracy: 0.5507 | F1 Score: 0.3309
