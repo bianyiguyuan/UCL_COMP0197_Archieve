@@ -1,4 +1,10 @@
 import torch
+import os
+import numpy as np
+import torchvision.utils as vutils
+from PIL import Image
+from PIL import ImageDraw, ImageFont
+
 
 def f1_score(y_true, y_pred, num_classes=10):
     y_true = torch.tensor(y_true, dtype=torch.int64)  
@@ -21,3 +27,74 @@ def f1_score(y_true, y_pred, num_classes=10):
     weighted_f1_score = (f1_scores * class_counts).sum().item() / (total_samples + 1e-8)
 
     return weighted_f1_score
+
+def accuracy(y_pred, y_true):
+    y_pred = np.round(y_pred)  
+    return np.mean(y_pred == y_true)
+
+def evaluate_model(model, test_loader):
+    model.eval()
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for images, labels in test_loader:
+            outputs = model(images)
+            _, predicted = torch.max(outputs, 1)
+            all_preds.extend(predicted.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+
+    acc = accuracy(all_labels, all_preds)
+    f1 = f1_score(all_labels, all_preds) 
+    return acc, f1
+
+
+def visualize_results(model, test_loader, classes, pic_name, images_shown=36):
+    model.eval()
+
+    images = []
+    labels = []
+    with torch.no_grad():
+        for batch_images, batch_labels in test_loader:
+            images.append(batch_images)
+            labels.append(batch_labels)
+            if len(images) * batch_images.size(0) >= images_shown:  
+                break
+
+    images = torch.cat(images, dim=0)[:images_shown]
+    labels = torch.cat(labels, dim=0)[:images_shown]
+
+    outputs = model(images)
+    _, predicted = torch.max(outputs, 1)
+    mean = torch.tensor([0.4914, 0.4822, 0.4465]).view(1, 3, 1, 1)
+    std = torch.tensor([0.2470, 0.2435, 0.2616]).view(1, 3, 1, 1)
+    images = images * std + mean
+    images = torch.clamp(images, 0, 1)  
+    grid_img = vutils.make_grid(images, nrow=6, padding=10, scale_each=True)
+    np_img = grid_img.permute(1, 2, 0).cpu().numpy() 
+    np_img = (np_img * 255).astype("uint8")  
+    img_pil = Image.fromarray(np_img)  
+    img_pil = img_pil.resize((900, 900), Image.LANCZOS)
+
+    img_width, img_height = img_pil.size
+    single_img_width = img_width // 6
+    single_img_height = img_height // 6
+    draw = ImageDraw.Draw(img_pil)
+    try:
+        font = ImageFont.truetype("arial.ttf", 18)  
+    except IOError:
+        font = ImageFont.load_default()
+
+    for i in range(images_shown):
+        row, col = divmod(i, 6)
+        x = col * single_img_width + 30  
+        y = (row + 1) * single_img_height - 50  
+        gt_class = classes[labels[i].item()]
+        pred_class = classes[predicted[i].item()]
+        text_str = f"GT: {gt_class}\nPred: {pred_class}"
+        draw.text((x, y), text_str, fill=(255, 0, 0), font=font)
+
+    script_dir = os.path.dirname(os.path.abspath(__file__))  
+    save_path = os.path.join(script_dir, pic_name)
+    img_pil.save(save_path)
+    print(f"Visualization saved to '{save_path}'")

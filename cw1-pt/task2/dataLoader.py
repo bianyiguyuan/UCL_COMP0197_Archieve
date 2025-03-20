@@ -20,3 +20,5 @@ def load_data(batch_size=32):
                 'dog', 'frog', 'horse', 'ship', 'truck')
     
     return train_loader, test_loader, classes
+
+

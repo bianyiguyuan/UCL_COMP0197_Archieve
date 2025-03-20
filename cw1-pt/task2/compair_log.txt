@@ -1,0 +1,15 @@
+== Compare between SGD and LS ==
+Epoch 1/10, Loss: 2250.2699600458145
+Epoch 2/10, Loss: 2036.728111743927
+Epoch 3/10, Loss: 1938.6976767778397
+Epoch 4/10, Loss: 1870.2921563386917
+Epoch 5/10, Loss: 1814.6740722060204
+Epoch 6/10, Loss: 1767.4100369215012
+Epoch 7/10, Loss: 1728.729411125183
+Epoch 8/10, Loss: 1702.3650977015495
+Epoch 9/10, Loss: 1671.6589015126228
+Epoch 10/10, Loss: 1644.102574467659
+
+[SGD] Training Time: 41.96s, Test Accuracy: 0.4941
+Model basic_sgd saved
+[LS] Training Time: 85.24s, Test Accuracy: 0.2226
